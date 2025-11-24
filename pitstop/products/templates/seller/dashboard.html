@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seller Dashboard • Pitstop.ph</title>
+ 
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <div class="header-actions">
+    <h1>Seller Dashboard <span>📈</span></h1>
+
+    <div>
+      <a href="{% url 'seller_product_list' %}" class="button">
+        My Products
+      </a>
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button">Logout</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Overview text -->
+  <div class="filter-box">
+    <span>
+      Overview of your Pitstop.ph performance as a seller.
+    </span>
+  </div>
+
+  <!-- 🛡️ Badge + Progress -->
+  <div class="badge-card">
+    <div>
+      {% if badge_level == "top" %}
+        <span class="badge-pill top">{{ badge_label }}</span>
+      {% elif badge_level == "verified" %}
+        <span class="badge-pill verified">{{ badge_label }}</span>
+      {% else %}
+        <span class="badge-pill">{{ badge_label }}</span>
+      {% endif %}
+    </div>
+
+    <div class="badge-meta">
+      <span>
+        Lifetime sales: <strong>₱{{ total_revenue|floatformat:2 }}</strong>
+      </span>
+
+      {% if next_badge_label %}
+        <span>
+          Next tier: <strong>{{ next_badge_label }}</strong>
+          · Need <strong>₱{{ amount_to_next|floatformat:2 }}</strong> more
+        </span>
+      {% else %}
+        <span>You’ve reached the highest tier 🎉</span>
+      {% endif %}
+    </div>
+
+    {% if next_badge_label %}
+      <div class="badge-progress">
+        <div class="badge-progress-fill" style="width: {{ progress_to_next }}%;"></div>
+      </div>
+      <div class="badge-meta">
+        <span>Progress to next tier</span>
+        <span>{{ progress_to_next }}%</span>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 🔢 Main KPIs -->
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-value">₱{{ total_revenue|floatformat:2 }}</div>
+      <div class="stat-sub">All time</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Units Sold</div>
+      <div class="stat-value">{{ total_units }}</div>
+      <div class="stat-sub">Across all orders</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Orders</div>
+      <div class="stat-value">{{ total_orders }}</div>
+      <div class="stat-sub">With your products</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Avg. Revenue / Order</div>
+      <div class="stat-value">₱{{ avg_per_order|floatformat:2 }}</div>
+      <div class="stat-sub">For orders including you</div>
+    </div>
+  </div>
+
+  <!-- ⏱ Last 30 days -->
+  <h2 class="section-title">Last 30 days</h2>
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-label">Revenue (30d)</div>
+      <div class="stat-value">₱{{ rev_30|floatformat:2 }}</div>
+      <div class="stat-sub">From your products</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Units Sold (30d)</div>
+      <div class="stat-value">{{ units_30 }}</div>
+      <div class="stat-sub">Pieces sold</div>
+    </div>
+  </div>
+
+  <!-- 🥇 Top products -->
+  <h2 class="section-title">Top Products</h2>
+  {% if top_products %}
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Product</th>
+          <th>Units Sold</th>
+          <th>Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in top_products %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.qty }}</td>
+          <td>₱{{ p.revenue|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="no-products">
+      No sales yet — once customers start buying, your top products will appear here.
+    </p>
+  {% endif %}
+
+  <!-- ⚠️ Low stock alert -->
+  <h2 class="section-title">Low Stock Alerts</h2>
+  {% if low_stock %}
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Brand / Model</th>
+          <th>Current Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in low_stock %}
+        <tr>
+          <td>{{ p.name }}</td>
+          <td>{{ p.brand }} {{ p.model }}</td>
+          <td>{{ p.stock }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="no-products">
+      You're all stocked up — no low inventory right now ✅
+    </p>
+  {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ product.name }} • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="header-actions detail-header">
+    <h1 class="detail-title">Product Details <span>🧰</span></h1>
+    <a href="{% url 'product_list' %}" class="button">⬅ Back to Products</a>
+  </div>
+
+  <!-- Product Container -->
+  <div class="detail-wrapper">
+    <div class="detail-card">
+
+      <!-- Product Image -->
+      <div class="detail-image">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+          <span class="no-image">No image uploaded</span>
+        {% endif %}
+      </div>
+
+      <!-- Product Info -->
+      <div class="detail-info">
+        <h2 class="product-name">{{ product.name }}</h2>
+
+        <div class="info-line"><strong>Brand:</strong> {{ product.brand|default:"—" }}</div>
+        <div class="info-line"><strong>Model:</strong> {{ product.model|default:"—" }}</div>
+        <div class="info-line"><strong>Price:</strong> ₱{{ product.price }}</div>
+        <div class="info-line"><strong>Stock:</strong> {{ product.stock }}</div>
+
+        <div class="info-line years">
+          <strong>Compatible Years:</strong>
+          {% if years_list %}
+            <div class="year-tags">
+              {% for year in years_list %}
+                <span class="tag">{{ year }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <span class="no-years">Not specified</span>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

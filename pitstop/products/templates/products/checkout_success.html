@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout Successful • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/checkout_success.css' %}">
+</head>
+
+<body class="checkout-success-page">
+
+  <div class="success-container">
+    <div class="success-card">
+      <div class="success-icon">✅</div>
+
+      <h1 class="success-heading">Checkout Successful!</h1>
+      <p class="success-subtitle">
+        Thanks for your purchase — your ride’s one step closer to peak performance 🚗✨
+      </p>
+
+      <div class="pill-row">
+        <span class="pill pill-info">
+          Cart Total: ₱{{ total }}
+        </span>
+
+        {% if applied_discount and applied_discount > 0 %}
+          <span class="pill pill-success">
+            Voucher Applied: -₱{{ applied_discount }}
+          </span>
+        {% endif %}
+
+        <span class="pill pill-info">
+          Convenience Fee (5%): ₱{{ convenience_fee }}
+        </span>
+
+        <span class="pill pill-dark">
+          Amount Paid: ₱{{ final_total }}
+        </span>
+      </div>
+
+      <div class="success-actions">
+        <a href="{% url 'transaction_history' %}" class="btn btn-primary">
+          View Transactions
+        </a>
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">
+          Continue Shopping
+        </a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

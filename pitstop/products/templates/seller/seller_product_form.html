@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title }} • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/seller_product_form.css' %}">
+</head>
+
+<body>
+  <div class="seller-form-page">
+
+    <!-- Header -->
+    <div class="header-actions">
+      <h1 class="page-title">
+        {{ title }} <span>🧰</span>
+      </h1>
+      <a href="{% url 'seller_product_list' %}" class="btn btn-ghost">
+        ⬅ Back to My Products
+      </a>
+    </div>
+
+    <!-- Form card -->
+    <div class="seller-form-card">
+      <h2 class="seller-form-title">
+        Product details
+      </h2>
+      <p class="seller-form-subtitle">
+        Fill in the information below to keep your catalog up to date.
+      </p>
+
+      <form method="post" enctype="multipart/form-data" class="seller-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary seller-form-submit">
+          Save
+        </button>
+      </form>
+    </div>
+
+  </div>
+</body>
+</html>

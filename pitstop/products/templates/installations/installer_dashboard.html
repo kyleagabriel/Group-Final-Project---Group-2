@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Installer Dashboard • Pitstop.ph</title>
+  
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+  <div class="header-actions">
+    <h1>Installer Dashboard <span>🔧</span></h1>
+    <div>
+      <a href="{% url 'installer_bookings' %}" class="button">
+        📅 Installation Bookings
+      </a>
+
+      <form action="{% url 'logout' %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="button">Logout 🚪</button>
+    </form>
+    </div>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Bookings</div>
+      <div class="stat-value">{{ total_bookings }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value">{{ pending_count }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Accepted</div>
+      <div class="stat-value">{{ accepted_count }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value">{{ rejected_count }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Estimated Finder’s Fee (accepted)</div>
+      <div class="stat-value">₱{{ total_finders_fee }}</div>
+      <div class="stat-sub">₱200 per accepted booking</div>
+    </div>
+  </div>
+
+  <!-- Upcoming schedule -->
+  <h2 class="section-title">Upcoming Schedule</h2>
+
+  {% if upcoming %}
+    <table class="mini-table">
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Customer</th>
+        <th>Car</th>
+        <th>Status</th>
+      </tr>
+      {% for b in upcoming %}
+        <tr>
+          <td>{{ b.scheduled_date }}</td>
+          <td>{{ b.scheduled_time }}</td>
+          <td>{{ b.customer.username }}</td>
+          <td>
+            {{ b.car_brand }} {{ b.car_model }}
+            {% if b.car_year %}({{ b.car_year }}){% endif %}
+          </td>
+          <td>
+            {% if b.status == "pending" %}
+              <span style="color:#facc15;">Pending</span>
+            {% elif b.status == "accepted" %}
+              <span style="color:#22c55e;">Accepted</span>
+            {% else %}
+              <span style="color:#f97373;">Rejected</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p class="no-products">No upcoming bookings yet.</p>
+  {% endif %}
+</body>
+</html>

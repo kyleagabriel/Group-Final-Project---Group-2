@@ -1,0 +1,321 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pitstop.ph | Products</title>
+  <link rel="stylesheet" href="{% static 'css/product_list.css' %}">
+
+  <script>
+    // ✅ inject boolean safely
+    const isLoggedIn = {% if user.is_authenticated %}true{% else %}false{% endif %};
+
+    // ✅ global vars for the modal
+    let pendingProductId = null;
+    let pendingMaxStock = null;
+
+    function openQuantityModal(productId, maxStock) {
+      if (!isLoggedIn) {
+        if (confirm("🔐 You must log in before adding items to your cart.\n\nGo to Login page?")) {
+          window.location.href = "{% url 'login' %}";
+        }
+        return;
+      }
+
+      pendingProductId = productId;
+      pendingMaxStock = parseInt(maxStock);
+
+      const overlay = document.getElementById("qty-modal-overlay");
+      const input = document.getElementById("qty-input");
+      const error = document.getElementById("qty-error");
+
+      input.value = "";
+      error.textContent = "";
+      overlay.style.display = "flex";
+      input.focus();
+    }
+
+    function closeQuantityModal() {
+      const overlay = document.getElementById("qty-modal-overlay");
+      overlay.style.display = "none";
+    }
+
+    function confirmQuantity() {
+      const input = document.getElementById("qty-input");
+      const error = document.getElementById("qty-error");
+      const qty = parseInt(input.value);
+
+      if (isNaN(qty) || qty <= 0) {
+        error.textContent = "❌ Please enter a valid quantity.";
+        return;
+      }
+
+      if (qty > pendingMaxStock) {
+        error.textContent = "⚠️ Only " + pendingMaxStock + " in stock.";
+        return;
+      }
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = `/products/add/${pendingProductId}/`;
+
+      const csrf = document.createElement("input");
+      csrf.type = "hidden";
+      csrf.name = "csrfmiddlewaretoken";
+      csrf.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      form.appendChild(csrf);
+
+      const qtyInput = document.createElement("input");
+      qtyInput.type = "hidden";
+      qtyInput.name = "quantity";
+      qtyInput.value = qty;
+      form.appendChild(qtyInput);
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+    // Optional: click outside modal to close
+    document.addEventListener("DOMContentLoaded", function () {
+      const overlay = document.getElementById("qty-modal-overlay");
+      if (overlay) {
+        overlay.addEventListener("click", function (e) {
+          if (e.target === overlay) {
+            closeQuantityModal();
+          }
+        });
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div class="page-wrapper">
+
+    <!-- Header / Navigation -->
+    <div class="header-actions">
+      <div class="header-left">
+        <h1 class="page-title">
+          Products <span>🧰</span>
+        </h1>
+      </div>
+
+      <div class="header-right">
+        {% if user.is_authenticated %}
+          <span class="header-greeting">
+            Hi, {{ user.username }} 👋
+          </span>
+
+          {% if user.profile.account_type == "seller" %}
+            <a href="{% url 'seller_dashboard' %}" class="button">
+              Seller Dashboard
+            </a>
+
+          {% elif user.profile.account_type == "installer" %}
+            <a href="{% url 'installer_bookings' %}" class="button">
+              🔧 Installation Bookings
+            </a>
+
+          {% else %}
+            <a href="{% url 'view_cart' %}" class="button">
+              🛒 View Cart
+            </a>
+            <a href="{% url 'book_installation' %}" class="button">
+              🔧 Book Installation
+            </a>
+            <a href="{% url 'my_bookings' %}" class="button">
+              📅 My Bookings
+            </a>
+            <a href="{% url 'transaction_history' %}" class="button">
+              📜 Transactions
+            </a>
+          {% endif %}
+
+          <form action="{% url 'logout' %}" method="post" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="button button-ghost">
+              Logout
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="button">
+            Login
+          </a>
+          <a href="{% url 'signup' %}" class="button button-secondary">
+            Sign Up
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Filter / Saved car -->
+    <div class="filter-box">
+
+      <!-- Car filter -->
+      <form method="get" action="." class="car-filter-form">
+        <label class="filter-label">
+          🚗 <strong>Add Car:</strong>
+        </label>
+
+        <div class="filter-row">
+          <input
+            type="text"
+            name="car_brand"
+            placeholder="Brand (e.g. Honda)"
+            value="{{ car_brand }}"
+          >
+          <input
+            type="text"
+            name="car_model"
+            placeholder="Model (e.g. Civic)"
+            value="{{ car_model }}"
+          >
+          <input
+            type="text"
+            name="car_year"
+            placeholder="Year (e.g. 2018)"
+            value="{{ car_year }}"
+          >
+
+          <button type="submit" class="button button-small">
+            Filter
+          </button>
+
+          {% if car_brand or car_model or car_year %}
+            <a href="{% url 'product_list' %}" class="clear-link">
+              Clear
+            </a>
+          {% endif %}
+        </div>
+      </form>
+
+      {% if user.is_authenticated %}
+        {% if saved_car.brand or saved_car.model or saved_car.year %}
+          <p class="saved-car">
+            Saved car:
+            <strong>
+              {{ saved_car.brand }} {{ saved_car.model }}
+              {% if saved_car.year %} ({{ saved_car.year }}){% endif %}
+            </strong>
+
+            <a
+              href="{% url 'product_list' %}?car_brand={{ saved_car.brand|urlencode }}&car_model={{ saved_car.model|urlencode }}&car_year={{ saved_car.year|urlencode }}"
+              class="saved-tag"
+            >
+              Use this car
+            </a>
+          </p>
+        {% endif %}
+
+        <!-- Save current filter as default car -->
+        <form method="post" action="." class="saved-car-form">
+          {% csrf_token %}
+          <input type="hidden" name="save_car_brand" value="{{ car_brand }}">
+          <input type="hidden" name="save_car_model" value="{{ car_model }}">
+          <input type="hidden" name="save_car_year"  value="{{ car_year }}">
+          <button type="submit" class="button button-secondary button-small">
+            💾 Save this car
+          </button>
+        </form>
+      {% endif %}
+    </div>
+
+    <!-- Product table -->
+    {% if products %}
+      <div class="table-wrapper">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Years</th>
+              <th>Price</th>
+              <th>Seller</th>
+              <th class="action-col">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for p in products %}
+            <tr>
+              <td><strong>{{ p.name }}</strong></td>
+              <td>{{ p.brand }}</td>
+              <td>{{ p.model }}</td>
+              <td>
+                {% if p.year_range %}
+                  {{ p.year_range }}
+                {% else %}
+                  <span class="muted-text">N/A</span>
+                {% endif %}
+              </td>
+
+              <td>₱{{ p.price }}</td>
+              <td class="seller-cell">
+                {{ p.seller.username }}
+                {% if p.badge_level == "top" %}
+                  <span class="store-badge store-badge-top">🏆 Top Store</span>
+                {% elif p.badge_level == "verified" %}
+                  <span class="store-badge store-badge-verified">✅ Verified Store</span>
+                {% endif %}
+              </td>
+
+              <td class="action-cell">
+                {% if user.is_authenticated and user.profile.account_type == "seller" %}
+                  <span class="muted-text small">Seller view only</span>
+                {% else %}
+                  <div class="row-actions">
+                    <a
+                      href="{% url 'product_detail' p.id %}"
+                      class="action-btn"
+                    >
+                      View
+                    </a>
+
+                    <button
+                      class="action-btn"
+                      type="button"
+                      onclick="openQuantityModal('{{ p.id }}', '{{ p.stock }}')"
+                      {% if p.stock <= 0 %}disabled{% endif %}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="no-products">
+        No products match your selected car.
+      </p>
+    {% endif %}
+
+    <footer class="page-footer">
+      © {{ now|date:"Y" }} Pitstop.ph — MVP Build
+    </footer>
+
+    <!-- Quantity Modal (overlay, hidden by default) -->
+    <div id="qty-modal-overlay" class="qty-modal-overlay">
+      <div class="qty-modal">
+        <h2 class="qty-title">Add to Cart</h2>
+        <p class="qty-label">Enter quantity to add:</p>
+        <input id="qty-input" type="number" min="1" class="qty-input-field">
+        <div id="qty-error" class="qty-error"></div>
+        <div class="qty-actions">
+          <button type="button" class="button button-small" onclick="confirmQuantity()">
+            Add
+          </button>
+          <button type="button" class="button button-secondary button-small" onclick="closeQuantityModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

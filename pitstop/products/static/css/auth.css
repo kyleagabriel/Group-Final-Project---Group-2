@@ -1,0 +1,240 @@
+/* =======================================
+   Base layout for auth pages
+   ======================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #f3f4f6;
+  color: #111827;
+  font-family: system-ui, -apple-system, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Main auth page wrapper */
+
+.auth-page {
+  min-height: 100vh;
+  padding: 32px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* =======================================
+   Header (shared login/signup)
+   ======================================= */
+
+.auth-header {
+  width: 100%;
+  max-width: 960px;
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.auth-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 650;
+}
+
+.auth-emoji {
+  font-size: 24px;
+}
+
+/* =======================================
+   Card container
+   ======================================= */
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  padding: 24px 24px 22px;
+}
+
+.auth-card-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 650;
+  color: #111827;
+}
+
+.auth-card-subtitle {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* =======================================
+   Form styling
+   (works with {{ form.as_p }})
+   ======================================= */
+
+.auth-form p {
+  margin: 0 0 12px;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"],
+.auth-form input[type="number"] {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  background-color: #f9fafb;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+              background-color 0.15s ease;
+}
+
+.auth-form input:focus {
+  background-color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb33;
+}
+
+/* Django error messages */
+
+.auth-form .errorlist {
+  margin: 0 0 6px;
+  padding-left: 16px;
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+/* Submit button */
+
+.auth-submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* =======================================
+   Buttons (primary / ghost)
+   ======================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+/* Primary blue button */
+
+.btn-primary {
+  width: 100%;
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.32);
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+}
+
+/* Ghost button (for Back to Products) */
+
+.btn-ghost {
+  background: transparent;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(148, 163, 184, 0.25);
+}
+
+/* =======================================
+   Footer text
+   ======================================= */
+
+.auth-footer-text {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #4b5563;
+  text-align: center;
+}
+
+.auth-link {
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+/* =======================================
+   Responsive tweaks
+   ======================================= */
+
+@media (max-width: 640px) {
+  .auth-header {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .auth-card {
+    margin-top: 12px;
+    padding: 20px 18px 18px;
+  }
+}

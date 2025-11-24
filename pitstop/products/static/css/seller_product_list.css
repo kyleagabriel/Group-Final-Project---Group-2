@@ -1,0 +1,332 @@
+/* =======================================
+   Base layout
+   ======================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: #f3f4f6;
+  color: #111827;
+  font-family: system-ui, -apple-system, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =======================================
+   Header (top bar)
+   ======================================= */
+
+.header-actions {
+  max-width: 1120px;
+  margin: 24px auto 16px;
+  padding: 14px 18px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 650;
+}
+
+.page-title span {
+  font-size: 22px;
+}
+
+.header-actions-right {
+  display: flex;
+  gap: 8px;
+}
+
+.header-actions-right form {
+  margin: 0;
+}
+
+/* =======================================
+   Buttons
+   ======================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+/* Primary */
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.32);
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+/* Secondary */
+.btn-secondary {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(148, 163, 184, 0.25);
+}
+
+/* Ghost */
+.btn-ghost {
+  background: #ffffff;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+/* Danger */
+.btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.btn-danger:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
+}
+
+/* Smaller action buttons in table */
+.btn-sm {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* =======================================
+   Description bar
+   ======================================= */
+
+.top-bar {
+  max-width: 1120px;
+  margin: 0 auto 16px;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.top-bar-text {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* =======================================
+   Table styling
+   ======================================= */
+
+.table-wrapper {
+  max-width: 1120px;
+  margin: 0 auto 24px;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  font-size: 13px;
+}
+
+.product-table th,
+.product-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.product-table thead th {
+  background: #f9fafb;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+}
+
+.product-table tbody tr:hover {
+  background: #f3f4f6;
+}
+
+.product-table tr:last-child td {
+  border-bottom: none;
+}
+
+.col-actions {
+  text-align: center;
+  width: 260px;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Empty state */
+.no-products {
+  max-width: 1120px;
+  margin: 12px auto;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* =======================================
+   Add Stock Modal
+   ======================================= */
+
+.qty-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: none; /* shown via JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.qty-modal {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
+  padding: 20px 18px 16px;
+}
+
+.qty-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.qty-subtitle {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.qty-input-field {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  background-color: #f9fafb;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+              background-color 0.15s ease;
+}
+
+.qty-input-field:focus {
+  background-color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb33;
+}
+
+.qty-error {
+  margin-top: 6px;
+  min-height: 16px;
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+.qty-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* =======================================
+   Responsive tweaks
+   ======================================= */
+
+@media (max-width: 768px) {
+  .header-actions {
+    margin: 16px 8px 12px;
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .top-bar {
+    margin: 0 8px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-wrapper {
+    margin: 0 8px 20px;
+  }
+
+  .row-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .col-actions {
+    width: 1%;
+  }
+}

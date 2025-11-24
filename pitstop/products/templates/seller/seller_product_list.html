@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Products • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/seller_product_list.css' %}">
+
+  <script>
+    // 🟦 Global for the target URL of the stock add POST
+    let pendingStockUrl = null;
+
+    function openStockModal(productId, currentStock, productName, postUrl) {
+      pendingStockUrl = postUrl;
+
+      const overlay = document.getElementById("stock-modal-overlay");
+      const input   = document.getElementById("stock-input");
+      const error   = document.getElementById("stock-error");
+      const label   = document.getElementById("stock-product-label");
+
+      label.textContent = productName + " — current stock: " + currentStock;
+      input.value = "";
+      error.textContent = "";
+
+      overlay.style.display = "flex";
+      input.focus();
+    }
+
+    function closeStockModal() {
+      const overlay = document.getElementById("stock-modal-overlay");
+      overlay.style.display = "none";
+    }
+
+    function confirmAddStock() {
+      const input = document.getElementById("stock-input");
+      const error = document.getElementById("stock-error");
+      const qty = parseInt(input.value);
+
+      if (isNaN(qty) || qty <= 0) {
+        error.textContent = "Please enter a valid quantity.";
+        return;
+      }
+
+      if (!pendingStockUrl) {
+        error.textContent = "Something went wrong. Please refresh.";
+        return;
+      }
+
+      // create a hidden POST form to seller_add_stock
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = pendingStockUrl;
+
+      const csrf = document.createElement("input");
+      csrf.type = "hidden";
+      csrf.name = "csrfmiddlewaretoken";
+      // reuse any existing CSRF token on the page (logout form)
+      csrf.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      form.appendChild(csrf);
+
+      const qtyInput = document.createElement("input");
+      qtyInput.type = "hidden";
+      qtyInput.name = "add_quantity";
+      qtyInput.value = qty;
+      form.appendChild(qtyInput);
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+    // close when clicking outside the modal
+    document.addEventListener("DOMContentLoaded", function () {
+      const overlay = document.getElementById("stock-modal-overlay");
+      if (overlay) {
+        overlay.addEventListener("click", function (e) {
+          if (e.target === overlay) {
+            closeStockModal();
+          }
+        });
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="header-actions">
+    <h1 class="page-title">
+      My Products <span>🧰</span>
+    </h1>
+
+    <div class="header-actions-right">
+      <a href="{% url 'seller_dashboard' %}" class="btn btn-secondary">
+        Dashboard
+      </a>
+
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-ghost">
+          Logout
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Top bar: description + Add Product -->
+  <div class="top-bar">
+    <span class="top-bar-text">
+      Manage the products in your Pitstop.ph catalog.
+    </span>
+    <a href="{% url 'seller_product_create' %}" class="btn btn-primary">
+      ＋ Add Product
+    </a>
+  </div>
+
+  <!-- Products table -->
+  {% if products %}
+    <div class="table-wrapper">
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ p.brand }}</td>
+            <td>{{ p.model }}</td>
+            <td>₱{{ p.price }}</td>
+            <td>{{ p.stock }}</td>
+            <td>
+              <div class="row-actions">
+                <a
+                  href="{% url 'seller_product_update' p.id %}"
+                  class="btn btn-ghost btn-sm"
+                >
+                  Edit
+                </a>
+
+                <form
+                  method="post"
+                  action="{% url 'seller_product_delete' p.id %}"
+                  onsubmit="return confirm('Delete this product?');"
+                >
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    Delete
+                  </button>
+                </form>
+
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  onclick="openStockModal(
+                    '{{ p.id }}',
+                    '{{ p.stock }}',
+                    '{{ p.name|escapejs }}',
+                    '{% url 'seller_add_stock' p.id %}'
+                  )"
+                >
+                  ➕ Add
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="no-products">
+      You haven’t added any products yet.
+    </p>
+  {% endif %}
+
+  <!-- Add Stock Modal -->
+  <div id="stock-modal-overlay" class="qty-modal-overlay">
+    <div class="qty-modal">
+      <h2 class="qty-title">Add Stock</h2>
+
+      <p id="stock-product-label" class="qty-subtitle">
+        <!-- Filled by JS -->
+      </p>
+
+      <input
+        id="stock-input"
+        type="number"
+        min="1"
+        class="qty-input-field"
+        placeholder="Quantity to add"
+      >
+
+      <div id="stock-error" class="qty-error"></div>
+
+      <div class="qty-actions">
+        <button type="button" class="btn btn-primary btn-sm" onclick="confirmAddStock()">
+          Add
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeStockModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

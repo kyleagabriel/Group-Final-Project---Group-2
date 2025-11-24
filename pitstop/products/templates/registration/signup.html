@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+
+<body>
+  <div class="auth-page">
+
+    <!-- Header bar (shared UI) -->
+    <div class="auth-header">
+      <h1 class="auth-title">
+        Create Account <span class="auth-emoji">🧑‍💻</span>
+      </h1>
+      <a href="{% url 'product_list' %}" class="btn btn-ghost">
+        ⬅ Back to Products
+      </a>
+    </div>
+
+    <!-- Registration card -->
+    <div class="auth-card">
+      <h2 class="auth-card-title">Join Pitstop.ph</h2>
+      <p class="auth-card-subtitle">
+        Create your account and start discovering the perfect upgrades for your ride 🚗✨
+      </p>
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary auth-submit">
+          Sign up
+        </button>
+      </form>
+
+      <p class="auth-footer-text">
+        Already have an account?
+        <a href="{% url 'login' %}" class="auth-link">Log in</a>
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

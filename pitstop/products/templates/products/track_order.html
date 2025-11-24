@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Track Order #{{ order.id }} • Pitstop.ph</title>
+
+  <!-- Reuse global site styling (layout, buttons, colors) -->
+  <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+  <!-- Page-specific styling -->
+  <link rel="stylesheet" href="{% static 'css/track_order.css' %}">
+</head>
+
+<body>
+
+  <!-- Consistent top header bar -->
+  <div class="header-actions track-header">
+    <h1 class="track-title">📦 Track Order #{{ order.id }}</h1>
+    <a href="{% url 'transaction_history' %}" class="button track-back-btn">
+      Back to Transactions
+    </a>
+  </div>
+
+  <div class="track-wrapper">
+    <div class="track-card">
+
+      <p class="track-meta">
+        Placed on <strong>{{ order.created_at|date:"M d, Y — h:ia" }}</strong><br>
+
+        Estimated delivery:
+        {% if order.delivery_eta %}
+          <strong>{{ order.delivery_eta|date:"M d, Y" }}</strong>
+        {% else %}
+          <strong>Calculating...</strong>
+        {% endif %}
+      </p>
+
+      <p class="track-status">
+        Current status:
+        <span class="status-badge">{{ order.delivery_stage }}</span>
+      </p>
+
+      <!-- Progress Steps -->
+      {% with stage=order.delivery_stage %}
+      <div class="progress-container">
+
+        <div class="progress-step {% if stage != 'Seller is packing' %}done{% endif %}">
+          <span class="dot"></span>
+          <span class="label">Seller is packing</span>
+        </div>
+
+        <div class="progress-step {% if stage == 'Sent to courier' or stage == 'Delivering to your address' or stage == 'Delivered' %}done{% endif %}">
+          <span class="dot"></span>
+          <span class="label">Sent to courier</span>
+        </div>
+
+        <div class="progress-step {% if stage == 'Delivering to your address' or stage == 'Delivered' %}done{% endif %}">
+          <span class="dot"></span>
+          <span class="label">Delivering to you</span>
+        </div>
+
+        <div class="progress-step {% if stage == 'Delivered' %}done{% endif %}">
+          <span class="dot"></span>
+          <span class="label">Delivered</span>
+        </div>
+
+      </div>
+      {% endwith %}
+
+    </div>
+  </div>
+
+</body>
+</html>

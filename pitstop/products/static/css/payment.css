@@ -1,0 +1,243 @@
+/* =======================================
+   Layout & Card
+   ======================================= */
+
+/* Center the payment card, similar to cart width */
+.pay-wrapper {
+  max-width: 720px;
+  margin: 16px auto 0;
+}
+
+/* Optional header tweaks */
+.pay-header {
+  margin-bottom: 18px;
+}
+
+.pay-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pay-back-btn {
+  min-width: 150px;
+}
+
+/* Main payment card */
+.pay-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  padding: 20px 22px 22px;
+}
+
+/* =======================================
+   Order summary
+   ======================================= */
+
+.section-title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.summary-line {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.summary-line strong {
+  color: #111827;
+}
+
+.summary-voucher {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.summary-voucher-empty {
+  color: #6b7280;
+}
+
+.summary-note {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* =======================================
+   Payment method selection
+   ======================================= */
+
+.method-title {
+  margin: 10px 0 6px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.method-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.method-option {
+  font-size: 14px;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.method-option input {
+  accent-color: #2563eb;
+}
+
+/* =======================================
+   Sections (COD / GCash / Card)
+   ======================================= */
+
+/* Hidden by default; JS will set display:block on selected */
+.pay-section {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 12px 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;   /* 👈 LIGHT, NOT BLACK */
+}
+
+.pay-section-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.pay-section-text {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* =======================================
+   QR image / fallback box
+   ======================================= */
+
+.qr-image {
+  width: 180px;          /* 👈 smaller & fixed size */
+  height: 180px;
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 12px;
+  border: 1px solid #e5e7eb;
+  object-fit: contain;
+  background-color: #ffffff;
+  display: block;
+}
+
+.qr-box {
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
+  border: 1px dashed #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  background-color: #f9fafb;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  padding: 8px;
+}
+
+/* =======================================
+   Card form fields
+   ======================================= */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.field-half {
+  grid-column: auto;
+}
+
+.card-grid label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.card-grid input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;   /* 👈 WHITE INPUTS */
+  color: #111827;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.15s ease-out,
+    box-shadow 0.15s ease-out,
+    background-color 0.15s ease-out;
+}
+
+.card-grid input::placeholder {
+  color: #9ca3af;
+}
+
+.card-grid input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+  background-color: #ffffff;
+}
+
+/* =======================================
+   Actions
+   ======================================= */
+
+.pay-actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+/* =======================================
+   Responsive
+   ======================================= */
+
+@media (max-width: 720px) {
+  .pay-wrapper {
+    padding: 0 4px;
+  }
+
+  .pay-card {
+    padding: 16px 14px 18px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}

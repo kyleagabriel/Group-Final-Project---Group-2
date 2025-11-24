@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transaction History • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/product_list.css' %}">
+  <link rel="stylesheet" href="{% static 'css/transaction_history.css' %}">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <div class="header-actions history-header">
+    <h1 class="page-title">Transaction History</h1>
+    <div class="history-header-actions">
+      <a href="{% url 'product_list' %}" class="button">
+        Back to Products
+      </a>
+      <a href="{% url 'view_cart' %}" class="button">
+        🛒 View Cart
+      </a>
+    </div>
+  </div>
+
+  <div class="history-wrapper">
+    <p class="subtle history-subtitle">
+      Review everything you've purchased through Pitstop.ph.
+    </p>
+
+    {% if orders %}
+      {% for order in orders %}
+        <div class="order-card">
+
+          <!-- Top header for each order -->
+          <div class="order-header">
+            <div>
+              <strong>Order #{{ order.id }}</strong>
+              <div class="order-meta">
+                Placed on {{ order.created_at|date:"M d, Y - h:ia" }}
+              </div>
+            </div>
+
+            <div class="order-amounts">
+              <div class="order-meta">Cart Total: ₱{{ order.total }}</div>
+              {% if order.applied_discount and order.applied_discount > 0 %}
+                <div class="order-meta">
+                  Discount: -₱{{ order.applied_discount }}
+                </div>
+              {% endif %}
+              <div class="order-paid">
+                Paid: ₱{{ order.final_total }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Status + track link -->
+          <p class="order-status-row">
+            <span class="order-status-label">
+              Status:
+              <strong>{{ order.delivery_stage }}</strong>
+            </span>
+
+            {% if order.delivery_eta %}
+              <span class="order-status-label">
+                · ETA:
+                <strong>{{ order.delivery_eta|date:"M d, Y" }}</strong>
+              </span>
+            {% endif %}
+
+            <span class="order-status-label">
+              ·
+              <a href="{% url 'track_order' order.id %}" class="track-link">
+                Track this order
+              </a>
+            </span>
+          </p>
+
+          <!-- Items table -->
+          <table class="order-items-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Model</th>
+                <th>Unit Price</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in order.items.all %}
+                <tr>
+                  <td>{{ item.product_name }}</td>
+                  <td>{{ item.model }}</td>
+                  <td>₱{{ item.unit_price|floatformat:2 }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>₱{{ item.subtotal|floatformat:2 }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="subtle history-empty">
+        You don’t have any past transactions yet.
+      </p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

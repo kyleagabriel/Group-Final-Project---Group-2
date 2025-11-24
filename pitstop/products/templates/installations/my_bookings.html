@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Bookings • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/my_bookings.css' %}">
+</head>
+<body>
+  <div class="header-actions">
+    <h1>My Bookings <span>📅</span></h1>
+    <div>
+      <a href="{% url 'product_list' %}" class="button">⬅ Back to Products</a>
+    </div>
+  </div>
+
+  {% if bookings %}
+    <table class="mini-table">
+      <tr>
+        <th>Installer</th>
+        <th>Car</th>
+        <th>Schedule</th>
+        <th>Status</th>
+      </tr>
+      {% for b in bookings %}
+        <tr>
+        
+          <td>{{ b.installer.username }}</td>
+          <td>{{ b.car_brand }} {{ b.car_model }} {% if b.car_year %}({{ b.car_year }}){% endif %}</td>
+          <td>{{ b.scheduled_date }} {{ b.scheduled_time }}</td>
+          <td>
+            {% if b.status == "pending" %}
+              <span style="color:#facc15;">Pending</span>
+            {% elif b.status == "accepted" %}
+              <span style="color:#22c55e;">Accepted</span>
+            {% else %}
+              <span style="color:#f97373;">Rejected</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p class="no-products">You don’t have any bookings yet.</p>
+  {% endif %}
+</body>
+</html>

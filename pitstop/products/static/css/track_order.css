@@ -1,0 +1,137 @@
+/* Page header alignment */
+.track-header {
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+.track-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.track-back-btn {
+  min-width: 180px;
+}
+
+/* Layout wrapper */
+.track-wrapper {
+  max-width: 780px;
+  margin: 0 auto 50px;
+}
+
+/* Main card */
+.track-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  padding: 28px 26px 32px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+/* Meta info (dates) */
+.track-meta {
+  text-align: center;
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+
+/* Status text */
+.track-status {
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 26px;
+}
+
+/* Status badge */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 600;
+  border: 1px solid #bae6fd;
+}
+
+/* ===============================
+   Progress Tracker (Horizontal)
+   =============================== */
+
+.progress-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+
+/* Step Dot */
+.dot {
+  width: 16px;
+  height: 16px;
+  background: #d1d5db;
+  border-radius: 50%;
+  border: 2px solid #9ca3af;
+  transition: all .2s ease;
+}
+
+/* Completed steps */
+.progress-step.done .dot {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Step Text */
+.label {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+}
+
+/* Connector Lines */
+.progress-step::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: calc(50% + 10px);
+  width: calc(100% - 20px);
+  height: 2px;
+  background: #d1d5db;
+  z-index: -1;
+}
+
+.progress-step:last-child::after {
+  display: none;
+}
+
+/* Completed connectors */
+.progress-step.done::after {
+  background: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .progress-container {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .progress-step::after {
+    display: none;
+  }
+}

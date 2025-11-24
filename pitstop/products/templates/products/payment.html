@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+  <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header-actions pay-header">
+    <h1 class="pay-title">💳 Mock Payment</h1>
+    <a href="{% url 'view_cart' %}" class="button pay-back-btn">
+      ⬅ Back to Cart
+    </a>
+  </div>
+
+  <!-- Main wrapper -->
+  <div class="pay-wrapper">
+    <div class="pay-card">
+
+      <!-- Order summary -->
+      <h2 class="section-title">Order Summary</h2>
+
+      <p class="summary-line">
+        Cart Total: <strong>₱{{ total }}</strong>
+      </p>
+
+      {% if voucher_code %}
+        <p class="summary-voucher">
+          Selected voucher: <strong>{{ voucher_code }}</strong><br>
+          <small class="summary-note">
+            (Discount will be applied after confirming payment.)
+          </small>
+        </p>
+      {% else %}
+        <p class="summary-voucher summary-voucher-empty">
+          No voucher selected for this order.
+        </p>
+      {% endif %}
+
+      <!-- Payment form -->
+      <form method="POST">
+        {% csrf_token %}
+
+        <h3 class="method-title">Choose payment method:</h3>
+
+        <div class="method-row">
+          <label class="method-option">
+            <input type="radio" name="payment_method" value="COD" checked>
+            🏠 Cash on Delivery (COD)
+          </label>
+          <label class="method-option">
+            <input type="radio" name="payment_method" value="GCASH">
+            📱 GCash (pay via QR)
+          </label>
+          <label class="method-option">
+            <input type="radio" name="payment_method" value="CARD">
+            💳 Debit / Credit Card
+          </label>
+        </div>
+
+        <!-- COD info -->
+        <div id="cod-section" class="pay-section">
+          <strong class="pay-section-title">Cash on Delivery</strong>
+          <p class="pay-section-text">
+            You’ll pay in cash when the item arrives at your address.
+          </p>
+        </div>
+
+        <!-- GCash QR -->
+        <div id="gcash-section" class="pay-section">
+          <strong class="pay-section-title">GCash Payment</strong>
+          <p class="pay-section-text">
+            Scan this QR using your GCash app to simulate payment.
+          </p>
+
+          {% if qr_data_url %}
+            <img
+              src="{{ qr_data_url }}"
+              alt="GCash QR Code"
+              class="qr-image"
+            >
+          {% else %}
+            <div class="qr-box">
+              QR failed to generate (mock only).
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Card form -->
+        <div id="card-section" class="pay-section">
+          <strong class="pay-section-title">Debit / Credit Card</strong>
+          <p class="pay-section-text">
+            This is a mock form — details are not charged or stored.
+          </p>
+
+          <div class="card-grid">
+            <div class="field-full">
+              <label for="card_name">Name on Card</label>
+              <input type="text" id="card_name" name="card_name">
+            </div>
+
+            <div class="field-full">
+              <label for="card_number">Card Number</label>
+              <input
+                type="text"
+                id="card_number"
+                name="card_number"
+                placeholder="XXXX-XXXX-XXXX-XXXX"
+              >
+            </div>
+
+            <div class="field-half">
+              <label for="card_expiry">Expiry (MM/YY)</label>
+              <input
+                type="text"
+                id="card_expiry"
+                name="card_expiry"
+                placeholder="MM/YY"
+              >
+            </div>
+
+            <div class="field-half">
+              <label for="card_cvv">CVV</label>
+              <input
+                type="password"
+                id="card_cvv"
+                name="card_cvv"
+                placeholder="***"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="pay-actions">
+          <button type="submit" class="btn btn-primary btn-lg">
+            ✅ Pay Now
+          </button>
+          <a href="{% url 'view_cart' %}" class="btn btn-secondary btn-lg">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // toggle sections based on selected method
+    const radios = document.querySelectorAll('input[name="payment_method"]');
+    const codSection = document.getElementById('cod-section');
+    const gcashSection = document.getElementById('gcash-section');
+    const cardSection = document.getElementById('card-section');
+
+    function updatePaymentView() {
+      const method = document.querySelector('input[name="payment_method"]:checked').value;
+      codSection.style.display = (method === 'COD') ? 'block' : 'none';
+      gcashSection.style.display = (method === 'GCASH') ? 'block' : 'none';
+      cardSection.style.display = (method === 'CARD') ? 'block' : 'none';
+    }
+
+    radios.forEach(r => {
+      r.addEventListener('change', updatePaymentView);
+    });
+
+    // set initial state
+    updatePaymentView();
+  </script>
+</body>
+</html>

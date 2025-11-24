@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Installation Bookings • Pitstop.ph</title>
+  <link rel="stylesheet" href="{% static 'css/product_list.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+  <div class="header-actions">
+    <h1>Installation Bookings <span>🛠️</span></h1>
+    <div>
+      <a href="{% url 'installer_dashboard' %}" class="button" style="margin-right:8px;">
+        📊 Dashboard
+      </a>
+      <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="button">Logout 🚪</button>
+      </form>
+    </div>
+  </div>
+
+  {% if bookings %}
+    <table class="mini-table">
+      <tr>
+        <th>Customer</th>
+        <th>Car</th>
+        <th>Schedule</th>
+        <th>Finder’s Fee</th>
+        <th>Status / Action</th>
+      </tr>
+      {% for b in bookings %}
+        <tr>
+          <td>{{ b.customer.username }}</td>
+          <td>
+            {{ b.car_brand }} {{ b.car_model }}
+            {% if b.car_year %}({{ b.car_year }}){% endif %}
+          </td>
+          <td>{{ b.scheduled_date }} {{ b.scheduled_time }}</td>
+          <td>₱{{ b.finders_fee }}</td>
+          <td>
+            {% if b.status == "pending" %}
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="booking_id" value="{{ b.id }}">
+                <button class="button" name="action" value="accept" style="margin-right:4px;">
+                  ✅ Accept
+                </button>
+                <button class="button" name="action" value="reject" style="background:#f85149;">
+                  ❌ Reject
+                </button>
+              </form>
+            {% elif b.status == "accepted" %}
+              <span style="color:#22c55e;">Accepted</span>
+            {% else %}
+              <span style="color:#f97373;">Rejected</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p class="no-products">No bookings yet.</p>
+  {% endif %}
+</body>
+</html>
